@@ -30,3 +30,11 @@ module.exports.hotelsGetOne = function (req, res) {
 	.status(200)
 	.json( hotel );
 };
+
+module.exports.addHotel = function (req, res) {
+  console.log("Post new Hotel");
+  console.log(req.body);
+  res
+  	.status(200)
+  	.json(req.body);
+}
