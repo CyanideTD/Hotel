@@ -15,4 +15,12 @@ router
   .route('/hotels/new')
   .post(ctrlHotels.addHotel);
 
+router
+  .route('/love')
+  .get(function (req, res) {
+  	res
+  	  .status(200)
+  	  .send("I love you");
+  });
+
 module.exports = router;

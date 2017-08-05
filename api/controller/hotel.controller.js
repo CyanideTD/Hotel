@@ -1,6 +1,11 @@
+var dbconn = require('../data/dbconnection.js');
 var hotelsData = require('../data/hotel-data.json');
 
 module.exports.getHotels = function (req, res) {
+  
+  var db = dbconn.get();
+  console.log("db", db);
+  
   console.log("Get all hotels");
   console.log(req.query);
 
