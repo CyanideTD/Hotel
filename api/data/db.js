@@ -35,3 +35,5 @@ process.once('SIGUSR2', function() {
 		process.kill(process.pid, 'SIGUSR2');
 	});
 });
+
+require('./hotels.models.js');
