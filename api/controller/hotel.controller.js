@@ -1,9 +1,11 @@
 var dbconn = require('../data/dbconnection.js');
+var ObjectId = require('mongodb').ObjectId;
 var hotelsData = require('../data/hotel-data.json');
 
 module.exports.getHotels = function (req, res) {
   
   var db = dbconn.get();
+  var collection = db.collection('hotelInfo');
   console.log("db", db);
 
   console.log("Get all hotels");
@@ -19,8 +21,6 @@ module.exports.getHotels = function (req, res) {
   if (req.query && req.query.count) {
   	counts = parseInt(req.query.count, 10);
   }
-
-  var collection = db.collection('hotelInfo');
 
   collection
   	.find()
@@ -39,10 +39,16 @@ module.exports.getHotels = function (req, res) {
 module.exports.hotelsGetOne = function (req, res) {
   var hotelId = req.params.hotelId;
   console.log("Get Hotel " + hotelId);
-  var hotel = hotelsData[hotelId];
-  res
-	.status(200)
-	.json( hotel );
+  var db = dbconn.get();
+  var collection = db.collection('hotelInfo');
+  collection
+  	.findOne({
+  		"_id" : ObjectId(hotelId)
+  	}, function(err, doc) {
+  	  res
+		.status(200)
+		.json( doc );
+  	});
 };
 
 module.exports.addHotel = function (req, res) {
