@@ -5,7 +5,7 @@ module.exports.getHotels = function (req, res) {
   
   var db = dbconn.get();
   console.log("db", db);
-  
+
   console.log("Get all hotels");
   console.log(req.query);
 
@@ -20,11 +20,20 @@ module.exports.getHotels = function (req, res) {
   	counts = parseInt(req.query.count, 10);
   }
 
-  var returnData = hotelsData.slice(offsets, offsets + counts);
+  var collection = db.collection('hotelInfo');
 
-  res
-	.status(200)
-	.json( returnData );
+  collection
+  	.find()
+  	.skip(offsets)
+  	.limit(counts)
+  	.toArray(function (err, docs) {
+  	  if (err) {
+  	  	console.log("Connection err: ", err);
+  	  }
+  	  res
+  	  	.status(200)
+  	  	.json(docs);
+  	});
 };
 
 module.exports.hotelsGetOne = function (req, res) {
