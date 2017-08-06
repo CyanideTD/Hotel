@@ -8,17 +8,26 @@ module.exports.getAllReviews = function(req, res) {
   	.findById(hotelId)
   	.select('reviews')
   	.exec(function(err, doc) {
-  		if (err) {
-   		  console.log("Error finding hotels");
-    	  res
-    		.status(500)
-    		.json(err);
-    	} else {
-    	  console.log('Get all reviews of ' + hotelId);
-  		  res
-  		    .status(201)
-  		    .json(doc.reviews);
-    	}
+  	  var response = {
+  	  	status : 200,
+  	  	message : []
+  	  }
+  	  if (err) {
+   		console.log("Error finding hotels");
+   		response.status = 500;
+   		response.message = err;
+      } else if (!doc){
+      	console.log("Hotel id not found in database", hotelId);
+      	response.status = 404;
+      	response.message = {
+      		"message" : "Hotel ID not found " + id
+      	};
+      } else {
+      	response.message = doc.reviews ? doc.reviews : [];
+      }
+      res
+      	.status(response.status)
+      	.json(response.message);
   	});
 };
 
@@ -43,6 +52,59 @@ module.exports.getOneReview = function(req, res) {
     	    .json( review );
     	}
     })
+};
 
+var _addReview = function(req, res, hotel) {
 
+  hotel.reviews.push({
+  	name : req.body.name,
+  	rating : parseInt(req.body.rating, 10),
+  	review : req.body.review
+  });
+
+  hotel.save(function(err, hotelUpdated) {
+  	if (err) {
+  	  console.log("Error updating hotel");
+  	  res
+  	  	.status(500)
+  	  	.json(err);
+  	} else {
+  	  console.log("Successfully updated");
+  	  res
+  	  	.status(201)
+  	  	.json(hotelUpdated.reviews[hotelUpdated.reviews.length - 1]);
+  	}
+  })
+}
+
+module.exports.reviewsAddOne = function(req, res) {
+  var hotelId = req.params.hotelId;
+
+  Hotel
+  	.findById(hotelId)
+  	.select('reviews')
+  	.exec(function(err, doc) {
+  	  var response = {
+  	  	status : 200,
+  	  	message : []
+  	  }
+  	  if (err) {
+   		console.log("Error finding hotels");
+   		response.status = 500;
+   		response.message = err;
+      } else if (!doc){
+      	console.log("Hotel id not found in database", hotelId);
+      	response.status = 404;
+      	response.message = {
+      		"message" : "Hotel ID not found " + id
+      	};
+      }
+      if (doc) {
+      	_addReview(req, res, doc);
+      } else {
+      	res
+      	.status(response.status)
+      	.json(response.message);
+      }
+  	});
 };

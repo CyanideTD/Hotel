@@ -152,6 +152,5 @@ module.exports.addHotel = function (req, res) {
   	  	  .status(201)
   	  	  .json(hotel);
   	  }
-
   	});
 }
