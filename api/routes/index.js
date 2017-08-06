@@ -6,15 +6,12 @@ var ctrlReviews = require('../controller/reviews.controller.js');
 
 router
   .route('/hotels')
-  .get(ctrlHotels.getHotels);
+  .get(ctrlHotels.getHotels)
+  .post(ctrlHotels.addHotel);
 
 router
   .route('/hotels/:hotelId')
   .get(ctrlHotels.hotelsGetOne);
-
-router
-  .route('/hotels/new')
-  .post(ctrlHotels.addHotel);
 
 // Review routes
 router

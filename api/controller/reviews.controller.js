@@ -8,10 +8,17 @@ module.exports.getAllReviews = function(req, res) {
   	.findById(hotelId)
   	.select('reviews')
   	.exec(function(err, doc) {
-  		console.log('Get all reviews of ' + hotelId);
-  		res
-  		  .status(201)
-  		  .json(doc.reviews);
+  		if (err) {
+   		  console.log("Error finding hotels");
+    	  res
+    		.status(500)
+    		.json(err);
+    	} else {
+    	  console.log('Get all reviews of ' + hotelId);
+  		  res
+  		    .status(201)
+  		    .json(doc.reviews);
+    	}
   	});
 };
 
@@ -25,9 +32,16 @@ module.exports.getOneReview = function(req, res) {
     .findById(hotelId)
     .select('reviews')
     .exec(function(err, doc) {
-    	var review = doc.reviews.id(reviewId);
-    	res
-    	  .json( review );
+    	if (err) {
+   		  console.log("Error finding hotels");
+    	  res
+    		.status(500)
+    		.json(err);
+    	} else {
+    	  var review = doc.reviews.id(reviewId);
+    	  res
+    	    .json( review );
+    	}
     })
 
 
