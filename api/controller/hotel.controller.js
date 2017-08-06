@@ -1,18 +1,53 @@
-var dbconn = require('../data/dbconnection.js');
-var ObjectId = require('mongodb').ObjectId;
-var hotelsData = require('../data/hotel-data.json');
+var mongoose = require('mongoose');
+var Hotel = mongoose.model('Hotel');
+
+var runGeoQuery = function(req, res) {
+  var lat = parseFloat(req.query.lat);
+  var lng = parseFloat(req.query.lng);
+  var num = 5;
+  var rad = 2000;
+
+  if (req.query.num) {
+  	num = parseInt(req.query.num, 10);
+  }
+
+  if (req.query.rad) {
+  	rad = parseInt(req.query.rad, 10);
+  }
+
+  var point = {
+  	type : "Point",
+  	coordinates : [lng, lat]
+  }
+
+  var geoOptions = {
+  	spherical : true,
+  	maxDistance : rad,
+  	num : num
+  };
+
+  Hotel
+    .geoNear(point, geoOptions, function(err, results, stats) {
+    	console.log("Geo results: ", results);
+    	console.log("Geo stats: ",  stats);
+    	res
+    	  .status(200)
+    	  .json(results);
+    });
+}
 
 module.exports.getHotels = function (req, res) {
-  
-  var db = dbconn.get();
-  var collection = db.collection('hotelInfo');
-  console.log("db", db);
 
   console.log("Get all hotels");
   console.log(req.query);
 
   var offsets = 0;
   var counts = 5;
+
+  if (req.query && req.query.lat && req.query.lng) {
+  	runGeoQuery(req, res);
+  	return;
+  }
 
   if (req.query && req.query.offset) {
   	offsets = parseInt(req.query.offset, 10);
@@ -22,29 +57,24 @@ module.exports.getHotels = function (req, res) {
   	counts = parseInt(req.query.count, 10);
   }
 
-  collection
-  	.find()
-  	.skip(offsets)
-  	.limit(counts)
-  	.toArray(function (err, docs) {
-  	  if (err) {
-  	  	console.log("Connection err: ", err);
-  	  }
-  	  res
-  	  	.status(200)
-  	  	.json(docs);
-  	});
+  Hotel
+    .find()
+    .skip(offsets)
+    .limit(counts)
+    .exec(function(err, hotels) {
+    	console.log("Found hotels " + hotels.length);
+    	res
+    	  .json(hotels);
+    })
 };
 
 module.exports.hotelsGetOne = function (req, res) {
   var hotelId = req.params.hotelId;
   console.log("Get Hotel " + hotelId);
-  var db = dbconn.get();
-  var collection = db.collection('hotelInfo');
-  collection
-  	.findOne({
-  		"_id" : ObjectId(hotelId)
-  	}, function(err, doc) {
+
+  Hotel
+  	.findById(hotelId)
+  	.exec(function(err, doc) {
   	  res
 		.status(200)
 		.json( doc );

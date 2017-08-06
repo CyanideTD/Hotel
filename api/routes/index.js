@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var ctrlHotels = require('../controller/hotel.controller.js');
+var ctrlReviews = require('../controller/reviews.controller.js');
 
 router
   .route('/hotels')
@@ -15,12 +16,13 @@ router
   .route('/hotels/new')
   .post(ctrlHotels.addHotel);
 
+// Review routes
 router
-  .route('/love')
-  .get(function (req, res) {
-  	res
-  	  .status(200)
-  	  .send("I love you");
-  });
+  .route('/hotels/:hotelId/reviews')
+  .get(ctrlReviews.getAllReviews);
+
+router
+  .route('/hotels/:hotelId/reviews/:reviewId')
+  .get(ctrlReviews.getOneReview);
 
 module.exports = router;
