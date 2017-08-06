@@ -125,7 +125,7 @@ var _splitArray = function(input) {
   	output = [];
   }
   return output;
-}
+};
 
 module.exports.addHotel = function (req, res) {
   Hotel
@@ -144,7 +144,7 @@ module.exports.addHotel = function (req, res) {
   	  if (err) {
   	  	console.log("Error creating hotel");
   	  	res
-  	  	  .ststus(400)
+  	  	  .status(400)
   	  	  .json(err);
   	  } else {
   	  	console.log("Hotel created", hotel);
@@ -153,4 +153,58 @@ module.exports.addHotel = function (req, res) {
   	  	  .json(hotel);
   	  }
   	});
-}
+};
+
+module.exports.hotelUpdateOne = function(req, res) {
+  var hotelId = req.params.hotelId;
+  console.log("Get Hotel " + hotelId);
+
+  Hotel
+    .findById(hotelId)
+    .select("-reviews -rooms")
+    .exec(function(err, doc) {
+
+      var response = {
+        status : 200,
+        message : doc
+      }
+
+      if (err) {
+      console.log("Error finding hotels");
+      response.status = 500;
+      response.message = err;
+      } else if (!doc) {
+        response.status = 404;
+        response.message = {"message" : "Hotel ID not found"};
+      }
+      
+      if (response.status !== 200) {
+        res
+          .status(response.status)
+          .json(response.message);
+      } else {
+        doc.name = req.body.name;
+        doc.description = req.body.description;
+        doc.stats = parseInt(req.body.stars, 10);
+        doc.services = _splitArray(req.body.services);
+        doc.photos = _splitArray(req.body.photos);
+        doc.currency = req.body.currency;
+        doc.location = {
+        address : req.body.address,
+        coordinates : [parseFloat(req.body.lng), parseFloat(req.body.lat)]
+        };
+
+        doc.save(function(err, hotelUpdated) {
+          if (err) {
+            res
+              .status(500)
+              .json(err);
+          } else {
+            res
+              .status(204)
+              .json();
+          }
+        });
+      }
+    });
+};
