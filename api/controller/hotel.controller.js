@@ -38,6 +38,7 @@ var runGeoQuery = function(req, res) {
 
 module.exports.getHotels = function (req, res) {
 
+  console.log("Requested by: ", req.user);
   console.log("Get all hotels");
   console.log(req.query);
 

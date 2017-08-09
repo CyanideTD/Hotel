@@ -8,8 +8,13 @@
 </head>
 
 <body>
-	
-	<div ng-view></div>
+
+	<mh-navigation></mh-navigation>
+
+	<div class="container">
+		<div ng-view></div>
+	</div>
+
 	<script type="text/javascript" src="jquery/jquery-3.2.1.min.js"></script>
 
 	<footer class="footer">
@@ -30,5 +35,10 @@
 	<script src="angular-app/hotel-display/hotel-display.controller.js"></script>
 	<script src="angular-app/hotel-data-factory/hotel-data-factory.js"></script>
 	<script src="angular-app/hotel-rating/hotel-rating.js"></script>
+	<script src="angular-app/hotel-register/hotel-register-controller.js"></script>
+	<script src="angular-app/navigation-directive/navigation-directive.js"></script>
+	<script src="angular-app/login/login-controller.js"></script>
+	<script src="angular-app/auth/auth-factory.js"></script>
+	<script src="angular-app/auth/auth-interceptor.js"></script>
 </body>
 </html>
