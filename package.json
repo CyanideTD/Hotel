@@ -22,6 +22,7 @@
   "homepage": "https://github.com/CyanideTD/Hotel#readme",
   "dependencies": {
     "angular": "^1.6.5",
+    "angular-jwt": "^0.1.9",
     "angular-route": "^1.6.5",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",

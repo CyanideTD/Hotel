@@ -20,7 +20,7 @@ router
 router
   .route('/hotels/:hotelId/reviews')
   .get(ctrlReviews.getAllReviews)
-  .post(ctrlReviews.reviewsAddOne);
+  .post(ctrlUsers.authenticate, ctrlReviews.reviewsAddOne);
 
 router
   .route('/hotels/:hotelId/reviews/:reviewId')

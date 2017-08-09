@@ -1,6 +1,6 @@
 angular.module('hotel').controller('LoginController', LoginController);
 
-function LoginController($http, $window, AuthFactory, $location) {
+function LoginController($http, $window, AuthFactory, $location, jwtHelper) {
 	var vm = this;
 
 	vm.isLoggedIn = function() {
@@ -22,6 +22,9 @@ function LoginController($http, $window, AuthFactory, $location) {
 				if(response.data.success) {
 					$window.sessionStorage.token = response.data.token;
 					AuthFactory.isLoggedIn = true;
+					var token = $window.sessionStorage.token;
+					var decodedToken = jwtHelper.decodeToken(token);
+					vm.loggedInUser = decodedToken.username;
 				}
 			}).catch(function(error) {
 				console.log(error);
